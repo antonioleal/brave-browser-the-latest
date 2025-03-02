@@ -64,7 +64,7 @@ Do you want to install it?
 MESSAGE_2 = """Brave is now at version %s
 Please review the installation output below:
 """
-MESSAGE_3 = """Brave Browser version available.
+MESSAGE_3 = """Brave Browser versions available.
 
 Your version   : %s
 Latest version : %s
@@ -195,7 +195,7 @@ def get_current_version():
 # Download the deb package
 def download_deb_package(ver):
     os.chdir("SlackBuild")
-    #os.system('/usr/bin/wget %s/%s' % (DOWNLOAD_LINK % ver , BINARY_FILE % ver))
+    os.system('/usr/bin/wget %s/%s' % (DOWNLOAD_LINK % ver , BINARY_FILE % ver))
     os.chdir("..")
 
 # Prepare a SlackBuild and Install on you box
