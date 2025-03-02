@@ -64,8 +64,7 @@ Do you want to install it?
 MESSAGE_2 = """Brave is now at version %s
 Please review the installation output below:
 """
-MESSAGE_3 = """Brave Browser versions available.
-
+MESSAGE_3 = """Brave Browser versions available:
 Your version   : %s
 Latest version : %s
 
@@ -210,8 +209,10 @@ def install(latest_version):
     return log
 
 # remove binary file
-def remove_binary_file():
-    #os.system('rm -rf %s' % BINARY_FILE)
+def delete_deb_package():
+    os.chdir("SlackBuild")
+    os.system('rm -rf *.deb')
+    os.chdir("..")
     pass
 
 #**********************************************************************************
@@ -258,34 +259,27 @@ def main():
 
     if param_show_gui:
         if current_version != latest_version:
-            download_deb_package(latest_version)
             manual_dialog(current_version, latest_version)
             if command_manual_install:
+                download_deb_package(latest_version)
                 log = install(latest_version)
                 end_dialog(latest_version, log)
-            remove_binary_file()
+            delete_deb_package()
         else:
             no_version_dialog()
     else:
         if current_version != latest_version or param_install_or_upgrade:
-            download_deb_package(latest_version)
             if not param_silent:
                 permission_dialog(current_version, latest_version)
             else:
                 command_confirm_upgrade = True
             if command_confirm_upgrade:
+                download_deb_package(latest_version)
                 log = install(latest_version)
                 if not param_silent:
                     end_dialog(latest_version, log)
-            remove_binary_file()
+            delete_deb_package()
 
 if __name__ == '__main__':
     main()
-
-    # test core functions:
-    #print("Web Version >>>", get_latest_version())
-    #print("Current Version >>>", get_current_version())
-    #ver = get_latest_version()
-    #download_deb_package(ver)
-    #print("New Version >>>", ver)
 

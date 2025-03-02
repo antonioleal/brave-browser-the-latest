@@ -7,7 +7,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 rm -rf /opt/brave-browser-the-latest
-rm -rf /usr/share/pixmaps/brave-bowser-the-latest.png
-rm -rf /usr/share/applications/brave-bowser-the-latest.desktop
-rm -rf /etc/cron.hourly/brave-bowser-the-latest-cron.sh
+rm -rf /usr/share/pixmaps/brave-browser-the-latest.png
+rm -rf /usr/share/applications/brave-browser-the-latest.desktop
+rm -rf /etc/cron.hourly/brave-browser-the-latest-cron.sh
 
