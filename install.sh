@@ -12,10 +12,6 @@ cd $SCRIPT_DIR
 DEST=/opt/brave-browser-the-latest
 mkdir -p $DEST
 
-chmod 644 *
-chmod +x *.py
-chmod +x *.sh
-
 cp brave-browser-the-latest.py* $DEST
 cp -avxu dialogs $DEST
 cp -avxu SlackBuild $DEST
@@ -27,4 +23,12 @@ cp README $DEST
 cp brave-browser-the-latest.png /usr/share/pixmaps
 cp brave-browser-the-latest.desktop /usr/share/applications
 cp brave-browser-the-latest-cron.sh /etc/cron.hourly
+
+chown root:root /etc/cron.hourly/brave-browser-the-latest-cron.sh
+chmod +x /etc/cron.hourly/brave-browser-the-latest-cron.sh
+
+chown -R root:root $DEST
+chmod -R 644 $DEST/*
+chmod -R +x $DEST/*.py
+chmod -R +x $DEST/*.sh
 
