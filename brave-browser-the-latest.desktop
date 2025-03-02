@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Brave Browser, the Latest
+GenericName=Brave Browser, the Latest
+Comment=Brave Browser updater tool
+Exec=gksu python3 /opt/brave-browser-the-latest/brave-browser-the-latest.py gui
+Icon=brave-browser-the-latest
+Terminal=false
+Type=Application
+Categories=System;
+StartupNotify=false
