@@ -254,8 +254,8 @@ def main():
             exit(0)
     os.system('touch %s' % LASTRUN)
 
-    current_version = get_current_version()
-    latest_version = get_latest_version()
+    current_version = str(get_current_version()).strip()
+    latest_version = str(get_latest_version()).strip()
 
     if param_show_gui:
         if current_version != latest_version:
