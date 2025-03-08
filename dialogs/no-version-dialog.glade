@@ -63,7 +63,9 @@
                 <property name="name">LabelMessage</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Google Chrome Stable is already 
+                <property name="label" translatable="yes">Congratulations !
+
+Your Brave Browser  is already 
 at the latest version.</property>
                 <property name="wrap">True</property>
                 <property name="max-width-chars">50</property>
