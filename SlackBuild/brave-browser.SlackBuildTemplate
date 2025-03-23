@@ -30,7 +30,7 @@ PRGNAM=brave-browser
 PRCNAM=amd64
 VERSION=${VERSION:-_version_}
 BUILD=${BUILD:-1}
-TAG=${TAG:-_SBo}
+TAG=${TAG:-}
 PKGTYPE=${PKGTYPE:-tgz}
 DEBBUILD=${DEBBUILD:-1}
 
@@ -88,7 +88,9 @@ mv $PKG/usr/share/man $PKG/usr/man
 
 # move icon into place
 mkdir -p $PKG/usr/share/pixmaps
-cp -a $CWD/brave-browser.png $PKG/usr/share/pixmaps/
+cp -a \
+   opt/brave.com/brave/product_logo_32.xpm \
+   $PKG/usr/share/pixmaps/brave-browser.xpm
 
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
@@ -100,6 +102,7 @@ mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp -a \
    $PKG/opt/brave.com/brave/LICENSE \
    $PKG/usr/doc/$PRGNAM-$VERSION/
+cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 
 # put the doc folder contents in the right place
 mv $PKG/usr/share/doc/$PRGNAM/* $PKG/usr/doc/$PRGNAM-$VERSION/

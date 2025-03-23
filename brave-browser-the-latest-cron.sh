@@ -43,6 +43,6 @@ done
 
 export XAUTHORITY=/home/$USERNAME/.Xauthority
 export DISPLAY=:0
-python3 /opt/brave-browser-the-latest/brave-browser-the-latest.py
+python3 /opt/brave-browser-the-latest/brave-browser-the-latest.py &
 
 

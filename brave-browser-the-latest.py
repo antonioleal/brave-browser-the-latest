@@ -204,7 +204,7 @@ def install(latest_version):
     log = os.popen('sed  "s/_version_/%s/" brave-browser.SlackBuildTemplate > brave-browser.SlackBuild' % latest_version).read()
     log = os.popen('chmod +x brave-browser.SlackBuild').read()
     log = os.popen('./brave-browser.SlackBuild').read()
-    log += os.popen('/sbin/upgradepkg --install-new /tmp/brave-browser-%s-x86_64-1_SBo.tgz' % latest_version).read()
+    log += os.popen('/sbin/upgradepkg --install-new /tmp/brave-browser-%s-x86_64-1.tgz' % latest_version).read()
     os.chdir("..")
     return log
 
