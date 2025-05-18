@@ -89,8 +89,8 @@ mv $PKG/usr/share/man $PKG/usr/man
 # move icon into place
 mkdir -p $PKG/usr/share/pixmaps
 cp -a \
-   opt/brave.com/brave/product_logo_32.xpm \
-   $PKG/usr/share/pixmaps/brave-browser.xpm
+   opt/brave.com/brave/product_logo_128.png \
+   $PKG/usr/share/pixmaps/brave-browser.png
 
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
