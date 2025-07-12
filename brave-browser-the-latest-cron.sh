@@ -39,7 +39,7 @@ do
 done
 
 # force your USERNAME here:
-# USERNAME="you username'
+# USERNAME="your username"
 
 export XAUTHORITY=/home/$USERNAME/.Xauthority
 export DISPLAY=:0
