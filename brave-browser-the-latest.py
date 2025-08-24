@@ -71,6 +71,19 @@ Latest version : %s
 You can now install it for the first time or, if
 applicable, upgrade to the newest version.
 """
+MESSAGE_4 = """You cannot run this program while the
+brave-browser from SlackBuilds.org is installed,
+as both are incompatible.
+
+If you do want to have automated updates
+then please remove the brave-browser and
+install it using this program.
+"""
+MESSAGE_5 = """Congratulations !
+
+Your Brave Browser  is already
+at the latest version.
+"""
 command_confirm_upgrade = False
 command_manual_install = False
 builder = None
@@ -112,11 +125,15 @@ class EndHandler:
     def onButtonOKPressed(self, ButtonOK):
         Gtk.main_quit()
 
-class NoVersionHandler:
+class OKHandler:
     def onDestroy(self, *args):
         Gtk.main_quit()
-    def onButtonDonePressed(self, ButtonDone):
+    def onButtonOKPressed(self, ButtonOK):
+        global builder, command_ok
+        window = builder.get_object("ok-dialog")
+        window.hide()
         Gtk.main_quit()
+        command_ok = True
 
 #**********************************************************************************
 #*                                                                                *
@@ -158,12 +175,14 @@ def end_dialog(latest_version, log):
     window.show_all()
     Gtk.main()
 
-def no_version_dialog():
+def ok_dialog(message):
     global builder
     builder = Gtk.Builder()
-    builder.add_from_file("dialogs/no-version-dialog.glade")
-    builder.connect_signals(NoVersionHandler())
-    window = builder.get_object("no-version-dialog")
+    builder.add_from_file("dialogs/ok-dialog.glade")
+    builder.connect_signals(OKHandler())
+    window = builder.get_object("ok-dialog")
+    LabelMessage = builder.get_object("LabelMessage")
+    LabelMessage.set_text(message)
     window.show_all()
     Gtk.main()
 
@@ -226,9 +245,17 @@ def main():
 
     # Check if you are root
     if os.geteuid() != 0:
-        print('You must run this script as root.')
+        msg='You must run this script as root.'
+        print(msg)
+        ok_dialog(msg)
         exit(0)
-    
+
+    #only run if brave-browser from SlackBuilds.org is *not* installed
+    slackbuild_version = os.popen('ls -1 /var/log/packages/brave-browser*_SBo  2> /dev/null | grep -v "the-latest"').read().strip()
+    if slackbuild_version != "":
+        ok_dialog(MESSAGE_4)
+        exit(0)
+
     # Read program arguments
     param_silent = False
     param_install_or_upgrade = False
@@ -266,7 +293,7 @@ def main():
                 end_dialog(latest_version, log)
             delete_deb_package()
         else:
-            no_version_dialog()
+            ok_dialog(MESSAGE_5)
     else:
         if current_version != latest_version or param_install_or_upgrade:
             if not param_silent:

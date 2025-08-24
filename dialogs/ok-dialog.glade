@@ -2,9 +2,10 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <object class="GtkDialog" id="no-version-dialog">
-    <property name="name">permission-dialog</property>
+  <object class="GtkDialog" id="ok-dialog">
+    <property name="name">ok-dialog</property>
     <property name="can-focus">False</property>
+    <property name="has-focus">True</property>
     <property name="title" translatable="yes">Brave Browser, the latest</property>
     <property name="resizable">False</property>
     <property name="window-position">center-always</property>
@@ -21,13 +22,13 @@
             <property name="can-focus">False</property>
             <property name="layout-style">end</property>
             <child>
-              <object class="GtkButton" id="ButtonDone">
-                <property name="label" translatable="yes">Done</property>
-                <property name="name">ButtonDone</property>
+              <object class="GtkButton" id="ButtonOK">
+                <property name="label" translatable="yes">OK</property>
+                <property name="name">ButtonOK</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <signal name="clicked" handler="onButtonDonePressed" swapped="no"/>
+                <signal name="clicked" handler="onButtonOKPressed" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -63,10 +64,6 @@
                 <property name="name">LabelMessage</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Congratulations !
-
-Your Brave Browser  is already 
-at the latest version.</property>
                 <property name="wrap">True</property>
                 <property name="max-width-chars">50</property>
               </object>
