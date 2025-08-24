@@ -61,9 +61,11 @@ New version  : %s
 
 Do you want to install it?
 """
+
 MESSAGE_2 = """Brave is now at version %s
 Please review the installation output below:
 """
+
 MESSAGE_3 = """Brave Browser versions available:
 Your version   : %s
 Latest version : %s
@@ -72,6 +74,7 @@ You can now install it for the first time or, if
 applicable, upgrade to the newest version.
 Proceed with install or upgrade?
 """
+
 MESSAGE_4 = """You cannot run this program while the
 brave-browser from SlackBuilds.org is installed,
 as both are incompatible.
@@ -80,11 +83,17 @@ If you do want to have automated updates
 then please remove the brave-browser and
 install it using this program.
 """
+
 MESSAGE_5 = """Congratulations !
 
-Your Brave Browser  is already
-at the latest version.
+Your Brave Browser is already at the
+latest version : %s
 """
+
+MESSAGE_6 = """Failed to download the %s archive.
+Must abort now, sorry.
+"""
+
 command_ok = False
 command_yes = False
 command_no = False
@@ -195,7 +204,12 @@ def get_current_version():
 def download_deb_package(ver):
     os.chdir("SlackBuild")
     os.system('/usr/bin/wget %s/%s' % (DOWNLOAD_LINK % ver , BINARY_FILE % ver))
+    test_archive = os.popen('ar -t %s  | grep malformed' % BINARY_FILE % ver).read()
     os.chdir("..")
+    if test_archive != "":
+        ok_dialog(MESSAGE_6 % BINARY_FILE % ver)
+        delete_deb_package()
+        exit(0)
 
 # Prepare a SlackBuild and Install on you box
 def install(latest_version):
@@ -275,7 +289,7 @@ def main():
                 end_dialog(latest_version, log)
             delete_deb_package()
         else:
-            ok_dialog(MESSAGE_5)
+            ok_dialog(MESSAGE_5 % latest_version)
     else:
         if current_version != latest_version or param_install_or_upgrade:
             if not param_silent:
