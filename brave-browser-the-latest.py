@@ -70,6 +70,7 @@ Latest version : %s
 
 You can now install it for the first time or, if
 applicable, upgrade to the newest version.
+Proceed with install or upgrade?
 """
 MESSAGE_4 = """You cannot run this program while the
 brave-browser from SlackBuilds.org is installed,
@@ -86,6 +87,9 @@ at the latest version.
 """
 command_confirm_upgrade = False
 command_manual_install = False
+command_ok = False
+command_yes = False
+command_no = False
 builder = None
 
 #**********************************************************************************
@@ -118,6 +122,22 @@ class PermissionHandler:
         global command_confirm_upgrade
         Gtk.main_quit()
         command_confirm_upgrade = False
+
+class YesNoHandler:
+    def onDestroy(self, *args):
+        Gtk.main_quit()
+    def onButtonYesPressed(self, ButtonYes):
+        global builder, command_yes
+        window = builder.get_object("yesno-dialog")
+        window.hide()
+        Gtk.main_quit()
+        command_yes = True
+    def onButtonNoPressed(self, ButtonNo):
+        global builder, command_no
+        window = builder.get_object("yesno-dialog")
+        window.hide()
+        Gtk.main_quit()
+        command_no = True
 
 class EndHandler:
     def onDestroy(self, *args):
@@ -159,6 +179,17 @@ def permission_dialog(current_version, latest_version):
     window = builder.get_object("permission-dialog")
     LabelMessage = builder.get_object("LabelMessage")
     LabelMessage.set_text(MESSAGE_1 % (current_version, latest_version))
+    window.show_all()
+    Gtk.main()
+
+def yesno_dialog(message):
+    global builder
+    builder = Gtk.Builder()
+    builder.add_from_file("dialogs/yesno-dialog.glade")
+    builder.connect_signals(YesNoHandler())
+    window = builder.get_object("yesno-dialog")
+    LabelMessage = builder.get_object("LabelMessage")
+    LabelMessage.set_text(message)
     window.show_all()
     Gtk.main()
 
@@ -240,7 +271,7 @@ def delete_deb_package():
 #*                                                                                *
 #**********************************************************************************
 def main():
-    global command_confirm_upgrade, command_manual_install
+    global command_confirm_upgrade, command_manual_install, command_no, command_yes, command_no
     os.chdir(APP_PATH)
 
     # Check if you are root
@@ -286,8 +317,10 @@ def main():
 
     if param_show_gui:
         if current_version != latest_version:
-            manual_dialog(current_version, latest_version)
-            if command_manual_install:
+            #manual_dialog(current_version, latest_version)
+            yesno_dialog(MESSAGE_3 % (current_version, latest_version))
+            #if command_manual_install:
+            if command_yes:
                 download_deb_package(latest_version)
                 log = install(latest_version)
                 end_dialog(latest_version, log)
@@ -297,10 +330,13 @@ def main():
     else:
         if current_version != latest_version or param_install_or_upgrade:
             if not param_silent:
-                permission_dialog(current_version, latest_version)
+                #permission_dialog(current_version, latest_version)
+                yesno_dialog(MESSAGE_1 % (current_version, latest_version))
             else:
-                command_confirm_upgrade = True
-            if command_confirm_upgrade:
+                #command_confirm_upgrade = True
+                command_yes = True
+            #if command_confirm_upgrade:
+            if command_yes:
                 download_deb_package(latest_version)
                 log = install(latest_version)
                 if not param_silent:
