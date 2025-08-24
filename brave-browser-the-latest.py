@@ -7,6 +7,7 @@
 #*          ------------------------------------------------------------          *
 #*                                                                                *
 #**********************************************************************************
+#
 # Copyright 2025 Antonio Leal, Porto Salvo, Portugal
 # All rights reserved.
 #
@@ -44,10 +45,9 @@ from gi.repository import Gtk
 
 #**********************************************************************************
 #*                                                                                *
-# Globals                                                                         *
+# Program variables and constants                                                 *
 #*                                                                                *
 #**********************************************************************************
-# Program variables
 DOWNLOAD_LINK = 'https://github.com/brave/brave-browser/releases/download/v%s/'
 BINARY_FILE = 'brave-browser_%s_amd64.deb'
 APP_PATH = '/opt/brave-browser-the-latest'
@@ -85,8 +85,6 @@ MESSAGE_5 = """Congratulations !
 Your Brave Browser  is already
 at the latest version.
 """
-command_confirm_upgrade = False
-command_manual_install = False
 command_ok = False
 command_yes = False
 command_no = False
@@ -97,32 +95,6 @@ builder = None
 #                                  Gui Handlers                                   *
 #*                                                                                *
 #**********************************************************************************
-class ManualHandler:
-    def onDestroy(self, *args):
-        Gtk.main_quit()
-    def onButtonInstallPressed(self, ButtonInstall):
-        global builder, command_manual_install
-        window = builder.get_object("manual-dialog")
-        window.hide()
-        Gtk.main_quit()
-        command_manual_install = True
-    def onButtonQuitPressed(self, ButtonQuit):
-        Gtk.main_quit()
-
-class PermissionHandler:
-    def onDestroy(self, *args):
-        Gtk.main_quit()
-    def onButtonYesPressed(self, ButtonYes):
-        global builder, command_confirm_upgrade
-        window = builder.get_object("permission-dialog")        
-        window.hide()
-        Gtk.main_quit()
-        command_confirm_upgrade = True
-    def onButtonNoPressed(self, ButtonNo):
-        global command_confirm_upgrade
-        Gtk.main_quit()
-        command_confirm_upgrade = False
-
 class YesNoHandler:
     def onDestroy(self, *args):
         Gtk.main_quit()
@@ -139,12 +111,6 @@ class YesNoHandler:
         Gtk.main_quit()
         command_no = True
 
-class EndHandler:
-    def onDestroy(self, *args):
-        Gtk.main_quit()
-    def onButtonOKPressed(self, ButtonOK):
-        Gtk.main_quit()
-
 class OKHandler:
     def onDestroy(self, *args):
         Gtk.main_quit()
@@ -155,39 +121,34 @@ class OKHandler:
         Gtk.main_quit()
         command_ok = True
 
+class EndHandler:
+    def onDestroy(self, *args):
+        Gtk.main_quit()
+    def onButtonOKPressed(self, ButtonOK):
+        Gtk.main_quit()
+
 #**********************************************************************************
 #*                                                                                *
 #                                    Dialogs                                      *
 #*                                                                                *
 #**********************************************************************************
-def manual_dialog(current_version, latest_version):
-    global builder
-    builder = Gtk.Builder()
-    builder.add_from_file("dialogs/manual-dialog.glade")
-    builder.connect_signals(ManualHandler())
-    window = builder.get_object("manual-dialog")
-    LabelMessage = builder.get_object("LabelMessage")
-    LabelMessage.set_text(MESSAGE_3 % (current_version, latest_version))
-    window.show_all()
-    Gtk.main()
-
-def permission_dialog(current_version, latest_version):
-    global builder
-    builder = Gtk.Builder()
-    builder.add_from_file("dialogs/permission-dialog.glade")
-    builder.connect_signals(PermissionHandler())
-    window = builder.get_object("permission-dialog")
-    LabelMessage = builder.get_object("LabelMessage")
-    LabelMessage.set_text(MESSAGE_1 % (current_version, latest_version))
-    window.show_all()
-    Gtk.main()
-
 def yesno_dialog(message):
     global builder
     builder = Gtk.Builder()
     builder.add_from_file("dialogs/yesno-dialog.glade")
     builder.connect_signals(YesNoHandler())
     window = builder.get_object("yesno-dialog")
+    LabelMessage = builder.get_object("LabelMessage")
+    LabelMessage.set_text(message)
+    window.show_all()
+    Gtk.main()
+
+def ok_dialog(message):
+    global builder
+    builder = Gtk.Builder()
+    builder.add_from_file("dialogs/ok-dialog.glade")
+    builder.connect_signals(OKHandler())
+    window = builder.get_object("ok-dialog")
     LabelMessage = builder.get_object("LabelMessage")
     LabelMessage.set_text(message)
     window.show_all()
@@ -203,17 +164,6 @@ def end_dialog(latest_version, log):
     Log.set_text(MESSAGE_2 % latest_version)
     Log = builder.get_object("Log")
     Log.get_buffer().set_text(log)
-    window.show_all()
-    Gtk.main()
-
-def ok_dialog(message):
-    global builder
-    builder = Gtk.Builder()
-    builder.add_from_file("dialogs/ok-dialog.glade")
-    builder.connect_signals(OKHandler())
-    window = builder.get_object("ok-dialog")
-    LabelMessage = builder.get_object("LabelMessage")
-    LabelMessage.set_text(message)
     window.show_all()
     Gtk.main()
 
@@ -271,7 +221,7 @@ def delete_deb_package():
 #*                                                                                *
 #**********************************************************************************
 def main():
-    global command_confirm_upgrade, command_manual_install, command_no, command_yes, command_no
+    global command_yes, command_no, command_no
     os.chdir(APP_PATH)
 
     # Check if you are root
@@ -281,9 +231,10 @@ def main():
         ok_dialog(msg)
         exit(0)
 
-    #only run if brave-browser from SlackBuilds.org is *not* installed
+    # Only run if brave-browser from SlackBuilds.org is *not* installed
     slackbuild_version = os.popen('ls -1 /var/log/packages/brave-browser*_SBo  2> /dev/null | grep -v "the-latest"').read().strip()
     if slackbuild_version != "":
+        print(MESSAGE_4)
         ok_dialog(MESSAGE_4)
         exit(0)
 
@@ -317,9 +268,7 @@ def main():
 
     if param_show_gui:
         if current_version != latest_version:
-            #manual_dialog(current_version, latest_version)
             yesno_dialog(MESSAGE_3 % (current_version, latest_version))
-            #if command_manual_install:
             if command_yes:
                 download_deb_package(latest_version)
                 log = install(latest_version)
@@ -330,12 +279,9 @@ def main():
     else:
         if current_version != latest_version or param_install_or_upgrade:
             if not param_silent:
-                #permission_dialog(current_version, latest_version)
                 yesno_dialog(MESSAGE_1 % (current_version, latest_version))
             else:
-                #command_confirm_upgrade = True
                 command_yes = True
-            #if command_confirm_upgrade:
             if command_yes:
                 download_deb_package(latest_version)
                 log = install(latest_version)
