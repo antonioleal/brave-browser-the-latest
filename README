@@ -41,5 +41,6 @@ Workflows:
    /opt/brave-browser-the-latest/brave-browser-the-latest.py \
    silent upgrade
 
-CAVEAT: Brave browser can be installed by "brave-browser-the-latest" or by
+CAVEAT:
+Brave browser can be installed by "brave-browser-the-latest" or by
 the "brave-browser" Slackbuild. Do not install both at the same time.
