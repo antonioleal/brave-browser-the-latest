@@ -1,4 +1,4 @@
-﻿Maintaining an updated Brave Browser on Slackware is now made
+Maintaining an updated Brave Browser on Slackware is now made
 easier with this small program, "brave-browser-the-latest".
 It is a simple python script that checks what is the latest
 version available and updates it on your Slackware box.
