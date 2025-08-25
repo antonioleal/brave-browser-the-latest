@@ -92,7 +92,9 @@ latest version : %s
 """
 
 MESSAGE_6 = """Failed to download the %s archive.
-Must abort now, sorry.
+
+Please re-run the program
+using the menu launcher.
 """
 
 command_ok = False
@@ -206,9 +208,7 @@ def download_deb_package(ver):
     os.chdir("SlackBuild")
     os.system('/usr/bin/wget %s/%s' % (DOWNLOAD_LINK % ver , BINARY_FILE % ver))
     result1 = subprocess.run('ar x %s 2>&1' % (BINARY_FILE % ver), capture_output=True, shell=True)
-    print("result1 = %d\n" % result1.returncode)
     result2 = subprocess.run('tar tvf data.tar.xz 2>&1', capture_output=True, shell=True)
-    print("result2 = %d\n" % result2.returncode)
     subprocess.run('rm -rf data.tar.xz control.tar.xz debian-binary', capture_output=False, shell=True)
     os.chdir("..")
     if (result1.returncode != 0) or (result2.returncode != 0):
