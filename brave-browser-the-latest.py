@@ -240,7 +240,7 @@ def delete_deb_package():
 #*                                                                                *
 #**********************************************************************************
 def main():
-    global command_yes, command_no, command_no
+    global command_yes, command_no, command_ok
     os.chdir(APP_PATH)
 
     # Check if you are root
