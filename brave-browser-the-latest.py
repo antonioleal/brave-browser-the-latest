@@ -229,11 +229,12 @@ def install(latest_version):
 
 # clean-up downloaded and generated files
 def cleanup():
+    t="tmp"
     os.chdir("SlackBuild")
     os.system('rm -rf *.deb*')
-    os.system('rm -rf /tmp/brave-browser-*.tgz')
-    os.system('rm -rf /tmp/SBo/brave-browser-*')
-    os.system('rm -rf /tmp/SBo/package-brave-browser')
+    os.system(f'rm -rf /{t}/brave-browser-*.tgz')
+    os.system(f'rm -rf /{t}/SBo/brave-browser-*')
+    os.system(f'rm -rf /{t}/SBo/package-brave-browser')
     os.chdir("..")
     pass
 
