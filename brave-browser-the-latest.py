@@ -213,7 +213,7 @@ def download_deb_package(ver):
     os.chdir("..")
     if (result1.returncode != 0) or (result2.returncode != 0):
         ok_dialog(MESSAGE_6 % BINARY_FILE % ver)
-        delete_deb_package()
+        cleanup()
         exit(0)
 
 # Prepare a SlackBuild and Install on you box
@@ -227,10 +227,13 @@ def install(latest_version):
     os.chdir("..")
     return log
 
-# remove binary file
-def delete_deb_package():
+# clean-up downloaded and generated files
+def cleanup():
     os.chdir("SlackBuild")
-    os.system('rm -rf *.deb')
+    os.system('rm -rf *.deb*')
+    os.system('rm -rf /tmp/brave-browser-*.tgz')
+    os.system('rm -rf /tmp/SBo/brave-browser-*')
+    os.system('rm -rf /tmp/SBo/package-brave-browser')
     os.chdir("..")
     pass
 
@@ -292,7 +295,7 @@ def main():
                 download_deb_package(latest_version)
                 log = install(latest_version)
                 end_dialog(latest_version, log)
-            delete_deb_package()
+            cleanup()
         else:
             ok_dialog(MESSAGE_5 % latest_version)
     else:
@@ -306,7 +309,7 @@ def main():
                 log = install(latest_version)
                 if not param_silent:
                     end_dialog(latest_version, log)
-            delete_deb_package()
+            cleanup()
 
 if __name__ == '__main__':
     main()
